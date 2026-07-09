@@ -38,7 +38,7 @@ nav .links a:hover{opacity:1;color:var(--ink)}
 .btn-o{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 .btn-o:hover{border-color:var(--ink);transform:translateY(-2px)}
 .btn-sm{padding:9px 20px;font-size:13.5px}
-@media(max-width:820px){nav .links{display:none}}
+@media(max-width:820px){nav .links{display:none}nav .wrap>.btn{margin-left:auto}}
 
 /* hero */
 .hero{position:relative;padding:158px 0 84px;background:
@@ -89,6 +89,8 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(30px);animation:wUp .7
 .fl1{top:9%;left:-6%;animation:ph 7s .6s ease-in-out infinite}
 .fl2{bottom:10%;right:-4%;animation:ph 9s 1.2s ease-in-out infinite}
 @media(max-width:940px){.fl1{left:0}.fl2{right:0}}
+@media(max-width:600px){.fl1,.fl2{display:none}.hero{padding:104px 0 54px}.hero .wrap{gap:30px}.stage{margin-top:4px}}
+@media(max-width:480px){h1{font-size:clamp(30px,9vw,40px)}.hero{padding-top:94px}}
 
 /* ticker */
 .tick{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;background:#fff}
@@ -216,12 +218,32 @@ h2{font-size:clamp(28px,4.6vw,46px);line-height:1.06;font-weight:800;max-width:7
 .crow:last-child{border:none}
 .crow .ci{width:42px;height:42px;border-radius:13px;background:var(--soft);color:var(--brand-d);display:grid;place-items:center;flex-shrink:0}
 .crow small{display:block;font-size:11.5px;color:var(--ink3);font-weight:600}
+.crow .cinfo{flex:1;min-width:0}
+.cline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:1px}
+.cval{color:var(--ink);text-decoration:none;font-weight:700;transition:color .2s;word-break:break-word}
+.cval:hover{color:var(--brand-d)}
+.cbtn{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;transition:transform .18s,border-color .18s,background .18s,color .18s;text-decoration:none}
+.cbtn:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-1px)}
+.cbtn.ic{width:34px;height:34px;padding:0;border-radius:50%;flex-shrink:0}
+.cbtn.ic .ico{width:16px;height:16px;stroke-width:2}
+.cbtn.wa{background:var(--wa);border-color:var(--wa);color:#fff}
+.cbtn.wa:hover{background:var(--wadeep);border-color:var(--wadeep);color:#fff}
+.cbtn.copied{background:var(--soft);border-color:var(--brand);color:var(--brand-d)}
 input,textarea{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;font-family:inherit;font-size:15px;margin-bottom:12px;transition:.2s;background:#fff}
 input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px rgba(14,159,110,.1)}
 
 footer{padding:36px 0;border-top:1px solid var(--line);margin-top:40px}
 footer .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink3)}
 footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
+footer .l2 a{transition:color .2s}
+footer .l2 a:hover{color:var(--ink)}
+@media(max-width:600px){
+  footer{padding:30px 0;margin-top:24px}
+  footer .wrap{flex-direction:column;align-items:flex-start;gap:18px}
+  footer .logo{order:1}
+  footer .l2{order:2;margin-left:0;gap:26px}
+  footer .wrap>span{order:3;font-size:12.5px}
+}
 
 #fab{position:fixed;left:16px;right:16px;bottom:16px;z-index:80;display:none;opacity:0;transform:translateY(20px);transition:.4s}
 #fab.show{opacity:1;transform:none}
@@ -251,6 +273,9 @@ footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
     <g id="i-spark"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></g>
     <g id="i-arrow"><path d="M5 12h14M13 6l6 6-6 6"/></g>
     <g id="i-doc"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h6M10 16h6"/></g>
+    <g id="i-phone"><path d="M6.8 3.5h3.1l1.5 4-2 1.4a11.5 11.5 0 0 0 5.2 5.2l1.4-2 4 1.5v3.1a2 2 0 0 1-2.1 2A16.5 16.5 0 0 1 4.8 5.6a2 2 0 0 1 2-2.1z"/></g>
+    <g id="i-mail"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.7 7.2l8.3 5.8 8.3-5.8"/></g>
+    <g id="i-copy"><rect x="8" y="8" width="11.5" height="11.5" rx="2.4"/><path d="M15.5 8V6.2A2.2 2.2 0 0 0 13.3 4H6.2A2.2 2.2 0 0 0 4 6.2v7.1A2.2 2.2 0 0 0 6.2 15.5H8"/></g>
   </defs>
 </svg>
 
@@ -549,10 +574,10 @@ footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
     <p class="ssub" data-r>Fifteen minutes, your real scenario — your branches, your policy, your payroll month. No slides.</p>
     <div class="cgrid">
       <div class="ccard" data-r>
-        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-users"/></svg></div><div><small>Your name</small>Kartiksingh Hushare</div></div>
-        <a class="crow" href="https://wa.me/971509660624"><div class="ci"><svg class="ico"><use href="#i-msg"/></svg></div><div><small>Phone / WhatsApp</small>+971 50 966 0624</div></a>
-        <a class="crow" href="mailto:info@evarca.com"><div class="ci"><svg class="ico"><use href="#i-doc"/></svg></div><div><small>Email</small>info@evarca.com</div></a>
-        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-pin"/></svg></div><div><small>Based in</small>Dubai, UAE</div></div>
+        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-users"/></svg></div><div class="cinfo"><small>Your name</small>Kartiksingh Hushare</div></div>
+        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-phone"/></svg></div><div class="cinfo"><small>Phone / WhatsApp</small><div class="cline"><a class="cval" href="tel:+971509660624">+971 50 966 0624</a><a class="cbtn ic wa" href="https://wa.me/971509660624" target="_blank" rel="noopener" aria-label="Message on WhatsApp"><svg class="ico"><use href="#i-msg"/></svg></a></div></div></div>
+        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-mail"/></svg></div><div class="cinfo"><small>Email</small><div class="cline"><a class="cval" href="mailto:info@evarca.com">info@evarca.com</a><button type="button" class="cbtn ic" id="copyEmail" data-copy="info@evarca.com" aria-label="Copy email"><svg class="ico"><use href="#i-copy"/></svg></button></div></div></div>
+        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-pin"/></svg></div><div class="cinfo"><small>Based in</small>Dubai, UAE</div></div>
       </div>
       <div class="ccard" data-r>
         <div style="font-weight:800;font-size:17px;margin-bottom:14px" class="fd">Book a demo</div>
@@ -659,42 +684,57 @@ footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
     document.querySelectorAll('.fl1 [data-count]').forEach(count);
   },reduced?0:1100);
 
-  // Book-a-demo form → sends straight to info@evarca.com (no redirect, no mail app)
+  // ===== Book-a-demo form → WhatsApp alert via CallMeBot (free) =====
+  // ONE-TIME SETUP:
+  //   1) Save  +34 644 56 55 18  as a contact, open it in WhatsApp
+  //   2) Send it exactly:  I allow callmebot to send me messages
+  //   3) It replies with your APIKEY — paste it into CALLMEBOT_APIKEY below
+  var CALLMEBOT_PHONE='+971509660624';                 // your WhatsApp number (with country code)
+  var CALLMEBOT_APIKEY='7457978';  // CallMeBot API key
+
   var demoForm=document.getElementById('demoForm');
   if(demoForm)demoForm.addEventListener('submit',function(e){
     e.preventDefault();
     var val=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
-    var name=val('dfName');
+    var text='*New Evarca demo request*\n'
+      +'Name: '+val('dfName')+'\n'
+      +'Company & size: '+val('dfCompany')+'\n'
+      +'Contact: '+val('dfContact')+'\n'
+      +'Note: '+(val('dfMsg')||'—');
+    var url='https://api.callmebot.com/whatsapp.php?phone='+encodeURIComponent(CALLMEBOT_PHONE)
+      +'&text='+encodeURIComponent(text)+'&apikey='+encodeURIComponent(CALLMEBOT_APIKEY);
+
     var btn=demoForm.querySelector('button');
     if(btn){btn.textContent='Sending…';btn.disabled=true;}
-
-    // multipart/form-data = a "simple" CORS request → no preflight → no Safari hang
-    var fd=new FormData();
-    fd.append('Name',name);
-    fd.append('Company & team size',val('dfCompany'));
-    fd.append('Phone or email',val('dfContact'));
-    fd.append('What eats your time today',val('dfMsg')||'—');
-    fd.append('_subject','Demo request — '+(name||'New enquiry'));
-    fd.append('_template','table');
-    fd.append('_captcha','false');
+    if(CALLMEBOT_APIKEY.indexOf('PASTE_')===0)console.warn('CallMeBot API key not set — the WhatsApp alert will not be delivered until you paste your key.');
 
     var settled=false;
     var ctrl=('AbortController' in window)?new AbortController():null;
-    var timer=setTimeout(function(){if(ctrl)ctrl.abort();finish(false);},12000);
-    function finish(ok){
-      if(settled)return;settled=true;clearTimeout(timer);
-      if(!btn)return;
-      if(ok){btn.textContent='✓ Sent — we\'ll be in touch';demoForm.reset();}
-      else{btn.disabled=false;btn.textContent='Couldn\'t send — email info@evarca.com';
-        setTimeout(function(){btn.textContent='Book a demo';},5000);}
+    function done(){
+      if(settled)return;settled=true;
+      if(btn){btn.textContent='✓ Sent — we\'ll be in touch';demoForm.reset();}
     }
+    // CallMeBot returns no CORS headers → fire-and-forget (opaque response, can't be read).
+    // 8s safety timeout so the button can never get stuck again.
+    var timer=setTimeout(function(){if(ctrl)ctrl.abort();done();},8000);
+    fetch(url,{mode:'no-cors',signal:ctrl?ctrl.signal:undefined})
+      .then(function(){clearTimeout(timer);done();})
+      .catch(function(){clearTimeout(timer);done();});
+  });
 
-    fetch('https://formsubmit.co/ajax/info@evarca.com',{
-      method:'POST',body:fd,headers:{'Accept':'application/json'},
-      signal:ctrl?ctrl.signal:undefined
-    }).then(function(r){return r.ok?r.json():Promise.reject();})
-      .then(function(){finish(true);})
-      .catch(function(){finish(false);});
+  // Copy-email button (icon swaps to a check on success)
+  var copyBtn=document.getElementById('copyEmail');
+  if(copyBtn)copyBtn.addEventListener('click',function(){
+    var v=copyBtn.getAttribute('data-copy');
+    var use=copyBtn.querySelector('use');
+    function mark(){copyBtn.classList.add('copied');copyBtn.setAttribute('aria-label','Email copied');
+      if(use)use.setAttribute('href','#i-check');
+      setTimeout(function(){copyBtn.classList.remove('copied');copyBtn.setAttribute('aria-label','Copy email');
+        if(use)use.setAttribute('href','#i-copy');},1600);}
+    function fallback(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(v).then(mark,function(){fallback(v);mark();});}
+    else{fallback(v);mark();}
   });
 })();
 </script>
