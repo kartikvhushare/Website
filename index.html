@@ -549,7 +549,7 @@ footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
     <p class="ssub" data-r>Fifteen minutes, your real scenario — your branches, your policy, your payroll month. No slides.</p>
     <div class="cgrid">
       <div class="ccard" data-r>
-        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-users"/></svg></div><div><small>Your name</small>Kartik Hushare</div></div>
+        <div class="crow"><div class="ci"><svg class="ico"><use href="#i-users"/></svg></div><div><small>Your name</small>Kartiksingh Hushare</div></div>
         <a class="crow" href="https://wa.me/971509660624"><div class="ci"><svg class="ico"><use href="#i-msg"/></svg></div><div><small>Phone / WhatsApp</small>+971 50 966 0624</div></a>
         <a class="crow" href="mailto:info@evarca.com"><div class="ci"><svg class="ico"><use href="#i-doc"/></svg></div><div><small>Email</small>info@evarca.com</div></a>
         <div class="crow"><div class="ci"><svg class="ico"><use href="#i-pin"/></svg></div><div><small>Based in</small>Dubai, UAE</div></div>
@@ -659,21 +659,36 @@ footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
     document.querySelectorAll('.fl1 [data-count]').forEach(count);
   },reduced?0:1100);
 
-  // Book-a-demo form → opens a pre-filled email to info@evarca.com
+  // Book-a-demo form → sends the enquiry straight to info@evarca.com (via FormSubmit)
   var demoForm=document.getElementById('demoForm');
   if(demoForm)demoForm.addEventListener('submit',function(e){
     e.preventDefault();
     var val=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
     var name=val('dfName'),company=val('dfCompany'),contact=val('dfContact'),msg=val('dfMsg');
-    var subject='Demo request — '+(name||'New enquiry');
-    var body=
-      'Name: '+name+'\r\n'+
-      'Company & team size: '+company+'\r\n'+
-      'Phone or email: '+contact+'\r\n\r\n'+
-      'What eats your time today:\r\n'+(msg||'—');
-    window.location.href='mailto:info@evarca.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
     var btn=demoForm.querySelector('button');
-    if(btn)btn.textContent='✓ Opening your email…';
+    var original=btn?btn.textContent:'Book a demo';
+    if(btn){btn.textContent='Sending…';btn.disabled=true;}
+    fetch('https://formsubmit.co/ajax/info@evarca.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        _subject:'Demo request — '+(name||'New enquiry'),
+        Name:name,
+        'Company & team size':company,
+        'Phone or email':contact,
+        'What eats your time today':msg||'—',
+        _template:'table',
+        _captcha:'false'
+      })
+    }).then(function(r){return r.json();}).then(function(){
+      if(btn){btn.textContent='✓ Sent — we\'ll reach out';}
+      demoForm.reset();
+    }).catch(function(){
+      // Fallback: open the visitor's email app if the request can't go through
+      var body='Name: '+name+'\r\nCompany & team size: '+company+'\r\nPhone or email: '+contact+'\r\n\r\nWhat eats your time today:\r\n'+(msg||'—');
+      window.location.href='mailto:info@evarca.com?subject='+encodeURIComponent('Demo request — '+(name||'New enquiry'))+'&body='+encodeURIComponent(body);
+      if(btn){btn.textContent=original;btn.disabled=false;}
+    });
   });
 })();
 </script>
