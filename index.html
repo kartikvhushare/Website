@@ -659,36 +659,42 @@ footer .l2{margin-left:auto;display:flex;gap:20px;font-weight:600}
     document.querySelectorAll('.fl1 [data-count]').forEach(count);
   },reduced?0:1100);
 
-  // Book-a-demo form → sends the enquiry straight to info@evarca.com (via FormSubmit)
+  // Book-a-demo form → sends straight to info@evarca.com (no redirect, no mail app)
   var demoForm=document.getElementById('demoForm');
   if(demoForm)demoForm.addEventListener('submit',function(e){
     e.preventDefault();
     var val=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
-    var name=val('dfName'),company=val('dfCompany'),contact=val('dfContact'),msg=val('dfMsg');
+    var name=val('dfName');
     var btn=demoForm.querySelector('button');
-    var original=btn?btn.textContent:'Book a demo';
     if(btn){btn.textContent='Sending…';btn.disabled=true;}
+
+    // multipart/form-data = a "simple" CORS request → no preflight → no Safari hang
+    var fd=new FormData();
+    fd.append('Name',name);
+    fd.append('Company & team size',val('dfCompany'));
+    fd.append('Phone or email',val('dfContact'));
+    fd.append('What eats your time today',val('dfMsg')||'—');
+    fd.append('_subject','Demo request — '+(name||'New enquiry'));
+    fd.append('_template','table');
+    fd.append('_captcha','false');
+
+    var settled=false;
+    var ctrl=('AbortController' in window)?new AbortController():null;
+    var timer=setTimeout(function(){if(ctrl)ctrl.abort();finish(false);},12000);
+    function finish(ok){
+      if(settled)return;settled=true;clearTimeout(timer);
+      if(!btn)return;
+      if(ok){btn.textContent='✓ Sent — we\'ll be in touch';demoForm.reset();}
+      else{btn.disabled=false;btn.textContent='Couldn\'t send — email info@evarca.com';
+        setTimeout(function(){btn.textContent='Book a demo';},5000);}
+    }
+
     fetch('https://formsubmit.co/ajax/info@evarca.com',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({
-        _subject:'Demo request — '+(name||'New enquiry'),
-        Name:name,
-        'Company & team size':company,
-        'Phone or email':contact,
-        'What eats your time today':msg||'—',
-        _template:'table',
-        _captcha:'false'
-      })
-    }).then(function(r){return r.json();}).then(function(){
-      if(btn){btn.textContent='✓ Sent — we\'ll reach out';}
-      demoForm.reset();
-    }).catch(function(){
-      // Fallback: open the visitor's email app if the request can't go through
-      var body='Name: '+name+'\r\nCompany & team size: '+company+'\r\nPhone or email: '+contact+'\r\n\r\nWhat eats your time today:\r\n'+(msg||'—');
-      window.location.href='mailto:info@evarca.com?subject='+encodeURIComponent('Demo request — '+(name||'New enquiry'))+'&body='+encodeURIComponent(body);
-      if(btn){btn.textContent=original;btn.disabled=false;}
-    });
+      method:'POST',body:fd,headers:{'Accept':'application/json'},
+      signal:ctrl?ctrl.signal:undefined
+    }).then(function(r){return r.ok?r.json():Promise.reject();})
+      .then(function(){finish(true);})
+      .catch(function(){finish(false);});
   });
 })();
 </script>
