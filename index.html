@@ -187,9 +187,6 @@ a{color:inherit;text-decoration:none}
   .mv-stage{height:400px}
   .mv-cap{font-size:12.5px}
 }
-@media (prefers-reduced-motion: reduce){
-  .mv *{animation-duration:.001ms!important;animation-delay:0ms!important;transition-duration:.001ms!important}
-}
 
 /* nav */
 nav{position:fixed;top:0;left:0;right:0;z-index:90;padding:16px 0;transition:.3s}
@@ -425,12 +422,6 @@ footer .l2 a:hover{color:var(--ink)}
 #fab .btn{width:100%;box-shadow:0 20px 44px -14px rgba(0,0,0,.5)}
 @media(max-width:700px){#fab{display:block}}
 
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  [data-r],.sub,.ctas,.proofs,.stage{opacity:1;transform:none}
-  h1 .w{opacity:1;transform:none}
-  .bub{opacity:1;transform:none}
-}
 </style>
 </head>
 <body>
@@ -950,7 +941,7 @@ footer .l2 a:hover{color:var(--ink)}
   }
   addEventListener('scroll',onScroll,{passive:true});onScroll();
 
-  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduced=false; // play content animations for everyone (they are gentle one-shot fades/fills)
   var tr=document.getElementById('tickTrack');if(tr)tr.innerHTML+=tr.innerHTML;
 
   function count(el){
@@ -1041,9 +1032,9 @@ footer .l2 a:hover{color:var(--ink)}
       tag.textContent=scenes[idx].getAttribute('data-tag');
       cap.textContent=scenes[idx].getAttribute('data-cap');
       clearTimeout(timer);
-      if(playing)timer=setTimeout(function(){go(idx+1);},reduced?4000:DUR[idx]);
+      if(playing)timer=setTimeout(function(){go(idx+1);},DUR[idx]);
     }
-    function play(){if(playing)return;playing=true;mv.classList.remove('paused');setIcon();go(idx<0?0:idx);}
+    function play(){if(playing)return;playing=true;mv.classList.add('in');mv.classList.remove('paused');setIcon();go(idx<0?0:idx);}
     function pause(){if(!playing)return;playing=false;mv.classList.add('paused');clearTimeout(timer);setIcon();}
     btn.addEventListener('click',function(){playing?pause():play();});
     segs.forEach(function(sg,j){sg.addEventListener('click',function(){if(!playing){playing=true;mv.classList.remove('paused');setIcon();}go(j);});});
@@ -1056,6 +1047,8 @@ footer .l2 a:hover{color:var(--ink)}
     mio.observe(mv);
     // belt-and-braces: if the observer's first pass misses (fonts/layout still settling), start anyway when visible
     setTimeout(function(){if(!started){var r=mv.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0){started=true;play();}}},700);
+    var _scrChk=function(){if(started){removeEventListener('scroll',_scrChk);return;}var r=mv.getBoundingClientRect();if(r.top<innerHeight*0.85&&r.bottom>60){started=true;play();removeEventListener('scroll',_scrChk);}};
+    addEventListener('scroll',_scrChk,{passive:true});
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
   })();
 
