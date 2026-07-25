@@ -1119,13 +1119,12 @@ footer .l2 a:hover{color:var(--ink)}
     document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
   })();
 
-  // ===== Book-a-demo form → WhatsApp alert via CallMeBot (free) =====
-  // ONE-TIME SETUP:
-  //   1) Save  +34 644 56 55 18  as a contact, open it in WhatsApp
-  //   2) Send it exactly:  I allow callmebot to send me messages
-  //   3) It replies with your APIKEY — paste it into CALLMEBOT_APIKEY below
-  var CALLMEBOT_PHONE='+971526319127';                 // your WhatsApp number (with country code)
-  var CALLMEBOT_APIKEY='7457978';  // CallMeBot API key
+  // ===== Book-a-demo form → WhatsApp (click-to-send) =====
+  // On submit we open WhatsApp with the enquiry pre-filled, addressed to the
+  // business number. Works on phone + desktop, no third-party API — the visitor
+  // taps Send to deliver it. To change where demo requests go, edit WA_NUMBER
+  // (digits only: country code + number, no "+", spaces or dashes).
+  var WA_NUMBER='971509660624';
 
   var demoForm=document.getElementById('demoForm');
   if(demoForm)demoForm.addEventListener('submit',function(e){
@@ -1136,25 +1135,18 @@ footer .l2 a:hover{color:var(--ink)}
       +'Company & size: '+val('dfCompany')+'\n'
       +'Contact: '+val('dfContact')+'\n'
       +'Note: '+(val('dfMsg')||'—');
-    var url='https://api.callmebot.com/whatsapp.php?phone='+encodeURIComponent(CALLMEBOT_PHONE)
-      +'&text='+encodeURIComponent(text)+'&apikey='+encodeURIComponent(CALLMEBOT_APIKEY);
+    var url='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(text);
 
     var btn=demoForm.querySelector('button');
-    if(btn){btn.textContent='Sending…';btn.disabled=true;}
-    if(CALLMEBOT_APIKEY.indexOf('PASTE_')===0)console.warn('CallMeBot API key not set — the WhatsApp alert will not be delivered until you paste your key.');
+    // Open inside the click gesture so browsers don't treat it as a blocked popup.
+    var win=window.open(url,'_blank');
+    if(!win){window.location.href=url;return;}   // popup blocked → use this tab
 
-    var settled=false;
-    var ctrl=('AbortController' in window)?new AbortController():null;
-    function done(){
-      if(settled)return;settled=true;
-      if(btn){btn.textContent='✓ Sent — we\'ll be in touch';demoForm.reset();}
+    if(btn){
+      btn.textContent='✓ Opening WhatsApp — tap Send';
+      demoForm.reset();
+      setTimeout(function(){btn.textContent='Book my 15-min demo';},6000);
     }
-    // CallMeBot returns no CORS headers → fire-and-forget (opaque response, can't be read).
-    // 8s safety timeout so the button can never get stuck again.
-    var timer=setTimeout(function(){if(ctrl)ctrl.abort();done();},8000);
-    fetch(url,{mode:'no-cors',signal:ctrl?ctrl.signal:undefined})
-      .then(function(){clearTimeout(timer);done();})
-      .catch(function(){clearTimeout(timer);done();});
   });
 
   // Copy-email button (icon swaps to a check on success)
